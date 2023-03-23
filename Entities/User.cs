@@ -12,16 +12,16 @@ namespace OzMateApi.Entities
     {
         [Key, Required]
         public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string GoogleId { get; set; }
-        public string FacebookId { get; set; }
-        public string Gender { get; set; }
-        public byte[] Image { get; set; }
-        public List<Post> Posts { get; set; }
-        public List<Comment> Comments { get; set; }
+        public string Name { get; set; }
+        public string? GoogleId { get; set; }
+        public string? FacebookId { get; set; }
+        public string? Gender { get; set; }
+        public byte[]? Image { get; set; }
+        public List<Post>? Posts { get; set; }
+        public List<Comment>? Comments { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public DateTime DeletedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 
     public class UserConfiguration : IEntityTypeConfiguration<User>

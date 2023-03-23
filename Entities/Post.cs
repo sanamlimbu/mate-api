@@ -16,10 +16,10 @@ namespace OzMateApi.Entities
         public Guid UserId { get; set; }
         public User User { get; set; }
         public List<Comment> Comments { get; set; }
-        public byte[] Image { get; set; }
+        public byte[]? Image { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public DateTime DeletedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 
     public class PostConfiguration : IEntityTypeConfiguration<Post>
