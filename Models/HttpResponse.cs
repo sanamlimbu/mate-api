@@ -1,18 +1,12 @@
 ﻿using System;
+
 namespace OzMateApi.Models
 {
-	public class HTTPResponse
+	public class HttpResponse
 	{
 		public string Code { get; set; } = string.Empty;
 		public string Message { get; set; } = string.Empty;
-		public object? ResponseDate { get; set; }
-	}
-
-	public enum ResponseType
-	{
-		Success,
-		NotFound,
-		Failure,
+		public object? ResponseData { get; set; }
 	}
 }
 
