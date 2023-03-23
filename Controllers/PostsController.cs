@@ -1,41 +1,99 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OzMateApi.Models;
+using OzMateApi.Entities;
 
 namespace OzMateApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]/")]
-public class PostController : ControllerBase
+public class PostsController : ControllerBase
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+    private readonly PostService _postService;
 
-    private readonly ILogger<PostController> _logger;
-
-    public PostController(ILogger<PostController> logger)
-    {
-        _logger = logger;
+    public PostsController(OzMateContext context)
+    { 
+        _postService = new (context);
     }
 
-    [HttpGet(Name = "GetPost")]
-    public ActionResult<PostController> Get()
+    // GET: api/posts
+    [HttpGet]
+    public IActionResult Get()
     {
-       
+        try
+        {
+            IEnumerable<PostModel> data = _postService.GetPosts();
+            return Ok(data);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
+    // GET: api/posts/5
+    [HttpGet("{id}", Name = "Get")]
+    public IActionResult Get(string id)
+    {
+        try
+        {
+            PostModel? data = _postService.GetPostById(id);
+
+            if(data == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(data);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // POST: api/posts
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<Post> Create(Post post)
+    public IActionResult Post([FromBody] PostModel post)
     {
-        post.Id = _
-        return CreatedAtAction(nameof(GetById),)
-
-
+        try
+        {
+            _postService.CreatePost(post);
+            return Ok(post);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
+    // PUT: api/posts/5
+    [HttpPut("{id}")]
+    public IActionResult Put(string id, [FromBody] PostModel post)
+    {
+        try
+        {
+            _postService.UpdatePost(id, post);
+            return Ok(post);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
+    // DELETE: api/posts/5
+    [HttpDelete("{id}")]
+    public IActionResult Delete(string id)
+    {
+        try
+        {
+            _postService.DeletePost(id);
+            return Ok();
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
 
