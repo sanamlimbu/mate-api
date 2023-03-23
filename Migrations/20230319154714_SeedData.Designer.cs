@@ -12,8 +12,8 @@ using OzMateApi.Entities;
 namespace OzMateApi.Migrations
 {
     [DbContext(typeof(OzMateContext))]
-    [Migration("20230319015417_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230319154714_SeedData")]
+    partial class SeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,7 +44,7 @@ namespace OzMateApi.Migrations
                         .HasColumnName("CreatedAt")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("PostId")
@@ -89,11 +89,10 @@ namespace OzMateApi.Migrations
                         .HasColumnName("CreatedAt")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<byte[]>("Image")
-                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -129,23 +128,19 @@ namespace OzMateApi.Migrations
                         .HasColumnName("CreatedAt")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FacebookId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("GoogleId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<byte[]>("Image")
-                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("Name")

@@ -20,13 +20,13 @@ namespace OzMateApi.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    GoogleId = table.Column<string>(type: "text", nullable: false),
-                    FacebookId = table.Column<string>(type: "text", nullable: false),
-                    Gender = table.Column<string>(type: "text", nullable: false),
-                    Image = table.Column<byte[]>(type: "bytea", nullable: false),
+                    GoogleId = table.Column<string>(type: "text", nullable: true),
+                    FacebookId = table.Column<string>(type: "text", nullable: true),
+                    Gender = table.Column<string>(type: "text", nullable: true),
+                    Image = table.Column<byte[]>(type: "bytea", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,10 +40,10 @@ namespace OzMateApi.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     Content = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Image = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Image = table.Column<byte[]>(type: "bytea", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -66,7 +66,7 @@ namespace OzMateApi.Migrations
                     PostId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
