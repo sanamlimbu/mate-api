@@ -7,56 +7,55 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace OzMateApi.Entities
 {
-    [Table("Comments")]
-    public class Comment
+    [Table("Replies")]
+    public class Reply
     {
         [Key, Required]
         public Guid Id { get; set; }
         public string Content { get; set; } = string.Empty;
         public Guid UserId { get; set; }
         public User User { get; set; }
-        public Guid PostId { get; set; }
-        public Post Post { get; set; }
-        public List<Reply> Replies { get; set; }
+        public Guid CommentId { get; set; }
+        public Comment Comment { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
     }
 
-    public class CommentConfiguration : IEntityTypeConfiguration<Comment>
+    public class ReplyConfiguration : IEntityTypeConfiguration<Reply>
     {
-        public void Configure(EntityTypeBuilder<Comment> builder)
+        public void Configure(EntityTypeBuilder<Reply> builder)
         {
             builder
-               .HasIndex(c => c.Id)
+               .HasIndex(r => r.Id)
                .IsUnique();
 
             builder
-                .Property(c => c.Id)
+                .Property(r => r.Id)
                 .HasColumnName("Id")
                 .HasColumnType("uuid")
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
             builder
-               .HasOne(c => c.User)
-               .WithMany(u => u.Comments)
+               .HasOne(r => r.User)
+               .WithMany(u => u.Replies)
                .HasForeignKey(c => c.UserId);
 
             builder
-                .HasOne(c => c.Post)
-                .WithMany(p => p.Comments)
-                .HasForeignKey(c => c.PostId);
+                .HasOne(r => r.Comment)
+                .WithMany(c => c.Replies)
+                .HasForeignKey(r => r.CommentId);
 
             builder
-               .Property(c => c.CreatedAt)
+               .Property(r => r.CreatedAt)
                .HasColumnName("CreatedAt")
                .HasColumnType("timestamp with time zone")
                .HasDefaultValueSql("now()")
                .IsRequired();
 
             builder
-                .Property(c => c.UpdatedAt)
+                .Property(r => r.UpdatedAt)
                 .HasColumnName("UpdatedAt")
                 .HasColumnType("timestamp with time zone")
                 .HasDefaultValueSql("now()")
@@ -64,4 +63,6 @@ namespace OzMateApi.Entities
         }
     }
 }
+
+
 

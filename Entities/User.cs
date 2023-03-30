@@ -17,8 +17,10 @@ namespace OzMateApi.Entities
         public string? FacebookId { get; set; }
         public string? Gender { get; set; }
         public byte[]? Image { get; set; }
+        public string? Location { get; set; }
         public List<Post>? Posts { get; set; }
         public List<Comment>? Comments { get; set; }
+        public List<Reply>? Replies { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
