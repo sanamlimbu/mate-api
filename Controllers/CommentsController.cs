@@ -4,6 +4,11 @@ using OzMateApi.Entities;
 
 namespace OzMateApi.Controllers;
 
+public class CommentRequest {
+    public string PostId { get; set; }
+    public CommentModel Comment { get; set; }
+}
+
 [ApiController]
 [Route("api/[controller]/")]
 public class CommentsController : ControllerBase
@@ -34,7 +39,7 @@ public class CommentsController : ControllerBase
     }
 
     // GET: api/comments/5
-    [HttpGet("{id}", Name = "Get")]
+    [HttpGet("{id}")]
     public IActionResult Get(string id)
     {
         try
@@ -56,19 +61,19 @@ public class CommentsController : ControllerBase
 
     // POST: api/comments
     [HttpPost]
-    public IActionResult Post([FromBody] string postId, [FromBody] CommentModel comment)
+    public IActionResult Post([FromBody] CommentRequest comment)
     {
         try
         {
-            PostModel? post = _postService.GetPostById(postId);
+            PostModel? post = _postService.GetPostById(comment.PostId);
 
             if (post == null)
             {
                 return BadRequest("Post not found.");
             }
 
-            comment.PostId = postId;
-            _commentService.CreateComment(comment);
+            comment.PostId = comment.PostId;
+            _commentService.CreateComment(comment.Comment);
 
             return Ok(comment);
         }

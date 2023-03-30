@@ -11,6 +11,7 @@ namespace OzMateApi.Models
         public string Content { get; set; } = string.Empty;
         public string UserId { get; set; }
         public string PostId { get; set; }
+        public UserModel? User { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
@@ -62,6 +63,36 @@ namespace OzMateApi.Models
                 comment.DeletedAt = data.DeletedAt;
 
                 return comment;
+            }
+            return null;
+        }
+
+        public CommentModel[]? GetCommentsByPostId(string id)
+        {
+            var guid = new Guid(id);
+            var data = _context.Comments.Where(d => d.PostId.Equals(guid)).ToArray();
+
+            if (data != null && data.Length > 0)
+            {
+                var result = new CommentModel[data.Length];
+                for (int i = 0; i < data.Length; i++) {
+
+                    var userService = new UserService(_context);
+                    var user = userService.GetUserById(data[i].UserId.ToString());
+
+                    result[i] = new CommentModel
+                    {
+                        Id = data[i].Id.ToString(),
+                        Content = data[i].Content,
+                        UserId = data[i].UserId.ToString(),
+                        PostId = data[i].PostId.ToString(),
+                        CreatedAt = data[i].CreatedAt,
+                        UpdatedAt = data[i].UpdatedAt,
+                        DeletedAt = data[i].DeletedAt,
+                        User = user,
+                    };
+                }
+                return result;
             }
             return null;
         }

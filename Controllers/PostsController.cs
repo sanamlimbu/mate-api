@@ -31,13 +31,13 @@ public class PostsController : ControllerBase
     }
 
     // GET: api/posts/5
-    [HttpGet("{id}", Name = "Get")]
+    [HttpGet("{id}")]
     public IActionResult Get(string id)
     {
         try
         {
             PostModel? data = _postService.GetPostById(id);
-
+       
             if(data == null)
             {
                 return NotFound();

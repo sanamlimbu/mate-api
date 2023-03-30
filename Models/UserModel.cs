@@ -11,6 +11,7 @@ namespace OzMateApi.Models
         public string? GoogleId { get; set; }
         public string? FacebookId { get; set; }
         public string? Gender { get; set; }
+        public string? Location { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }

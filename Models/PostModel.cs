@@ -7,6 +7,8 @@ namespace OzMateApi.Models
 	{
         public string Id { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
+        public CommentModel[]? Comments { get; set; }
+        public UserModel user { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
@@ -25,16 +27,23 @@ namespace OzMateApi.Models
             List<PostModel> resp = new List<PostModel>();
             var dataList = _context.Posts.ToList();
 
-            dataList.ForEach(row => resp.Add(
-                new PostModel()
+            dataList.ForEach(row => {
+                var userService = new UserService(_context);
+                var user = userService.GetUserById(row.UserId.ToString());
+                if (user != null)
                 {
-                    Id = row.Id.ToString(),
-                    Content = row.Content,
-                    CreatedAt = row.CreatedAt,
-                    UpdatedAt = row.UpdatedAt,
-                    DeletedAt = row.DeletedAt,
+                    resp.Add(
+                        new PostModel()
+                        {
+                            Id = row.Id.ToString(),
+                            Content = row.Content,
+                            CreatedAt = row.CreatedAt,
+                            UpdatedAt = row.UpdatedAt,
+                            DeletedAt = row.DeletedAt,
+                            user = user
+                        });
                 }
-                ));
+            });
 
             return resp;
         }
@@ -46,12 +55,16 @@ namespace OzMateApi.Models
             var data = _context.Posts.Where(d => d.Id.Equals(guid)).FirstOrDefault();
 
             if (data != null)
-            {
+            { 
+                var commentService = new CommentService(_context);
+                var comments = commentService.GetCommentsByPostId(data.Id.ToString());
+               
                 post.Id = data.Id.ToString();
                 post.Content = data.Content;
                 post.CreatedAt = data.CreatedAt;
                 post.UpdatedAt = data.UpdatedAt;
                 post.DeletedAt = data.DeletedAt;
+                post.Comments = comments;
 
                 return post;
             }
