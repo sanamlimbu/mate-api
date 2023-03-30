@@ -18,7 +18,9 @@ namespace OzMateApi.Migrations
             {
                 Id = Guid.NewGuid(),
                 Name = faker.Name.FullName(),
-                Gender = faker.PickRandom<Gender>().ToString()
+                Gender = faker.PickRandom<Gender>().ToString(),
+                Location= faker.Address.State(),
+
             }).ToList();
 
            foreach (var user in users)
