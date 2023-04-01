@@ -24,7 +24,7 @@ public class CommentsController : ControllerBase
 
     // GET: api/comments
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetAllComments()
     {
         try
         {
@@ -40,7 +40,7 @@ public class CommentsController : ControllerBase
 
     // GET: api/comments/5
     [HttpGet("{id}")]
-    public IActionResult Get(string id)
+    public IActionResult GetCommentById(string id)
     {
         try
         {
@@ -61,7 +61,7 @@ public class CommentsController : ControllerBase
 
     // POST: api/comments
     [HttpPost]
-    public IActionResult Post([FromBody] CommentRequest comment)
+    public IActionResult CreateComment([FromBody] CommentRequest comment)
     {
         try
         {
@@ -85,7 +85,7 @@ public class CommentsController : ControllerBase
 
     // PUT: api/comments/5
     [HttpPut("{id}")]
-    public IActionResult Put(string id, [FromBody] CommentModel comment)
+    public IActionResult UpdateComment(string id, [FromBody] CommentModel comment)
     {
         try
         {
@@ -98,9 +98,9 @@ public class CommentsController : ControllerBase
         }
     }
 
-    // DELETE: api/Posts/5
+    // DELETE: api/comments/5
     [HttpDelete("{id}")]
-    public IActionResult Delete(string id)
+    public IActionResult DeleteComment(string id)
     {
         try
         {
@@ -110,6 +110,21 @@ public class CommentsController : ControllerBase
         catch (Exception ex)
         {
             return BadRequest(HttpResponseHandler.GetExceptionResponse(ex));
+        }
+    }
+
+    // GET: api/comments/id/replies
+    [HttpGet("{id}/comments")]
+    public IActionResult GetCommentReplies(string id)
+    {
+        try
+        {
+            IEnumerable<ReplyModel> data = _commentService.GetCommentReplies(id);
+            return Ok(data);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }
