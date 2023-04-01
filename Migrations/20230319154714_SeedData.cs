@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Bogus;
 using OzMateApi.Entities;
+using System;
 
 #nullable disable
 
@@ -19,18 +20,22 @@ namespace OzMateApi.Migrations
                 Id = Guid.NewGuid(),
                 Name = faker.Name.FullName(),
                 Gender = faker.PickRandom<Gender>().ToString(),
-                Location= faker.Address.State(),
+                Location = faker.Address.State(),
 
             }).ToList();
 
-           foreach (var user in users)
+
+            foreach (var user in users)
             {
                 migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] {"Id", "Name", "Gender" },
-                values: new object[] {user.Id, user.Name, user.Gender }
+                columns: new[] { "Id", "Name", "Gender" },
+                values: new object[] { user.Id, user.Name, user.Gender }
                 );
+            }
 
+            foreach (var user in users)
+            {
                 var posts = Enumerable.Range(1, 5).Select(i => new Post
                 {
                     Id = Guid.NewGuid(),
@@ -46,12 +51,19 @@ namespace OzMateApi.Migrations
                     values: new object[] { post.Id, post.Content, post.UserId }
                     );
 
-                    var comments = Enumerable.Range(1, 5).Select(i => new Comment
+                    var comments = Enumerable.Range(1, 5).Select(i =>
                     {
-                        Id = Guid.NewGuid(),
-                        PostId = post.Id,
-                        Content = faker.Lorem.Paragraph(),
-                        UserId = post.UserId,
+                        // generate random int between 0 to 9
+                        Random random = new Random();
+                        int index = random.Next(10);
+
+                        return new Comment
+                        {
+                            Id = Guid.NewGuid(),
+                            PostId = post.Id,
+                            Content = faker.Lorem.Paragraph(),
+                            UserId = users[index].Id
+                        };
                     }).ToList();
 
                     foreach (var comment in comments)
@@ -63,7 +75,7 @@ namespace OzMateApi.Migrations
                             );
                     }
                 }
-            }  
+            }
         }
 
         /// <inheritdoc />

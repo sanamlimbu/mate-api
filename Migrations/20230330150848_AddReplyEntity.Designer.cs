@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OzMateApi.Entities;
@@ -11,9 +12,11 @@ using OzMateApi.Entities;
 namespace OzMateApi.Migrations
 {
     [DbContext(typeof(OzMateContext))]
-    partial class OzMateContextModelSnapshot : ModelSnapshot
+    [Migration("20230330150848_AddReplyEntity")]
+    partial class AddReplyEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
