@@ -136,6 +136,34 @@ namespace OzMateApi.Models
                 _context.SaveChanges();
             }
         }
+
+        public List<ReplyModel> GetCommentReplies(string commentId)
+        {
+            List<ReplyModel> resp = new List<ReplyModel>();
+            var dataList = _context.Replies.Where(d => d.CommentId.Equals(commentId)).ToList();
+            var userService = new UserService(_context);
+
+            dataList.ForEach(row =>
+            {
+                var user = userService.GetUserById(row.UserId.ToString());
+                if (user != null)
+                {
+                    resp.Add(
+                        new ReplyModel()
+                        {
+                            Id = row.Id.ToString(),
+                            Content = row.Content,
+                            CreatedAt = row.CreatedAt,
+                            UpdatedAt = row.UpdatedAt,
+                            DeletedAt = row.DeletedAt,
+                            User = user
+                        });
+                }
+            });
+
+            return resp;
+
+        }
     }
 }
 
