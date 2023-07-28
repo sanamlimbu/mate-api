@@ -1,115 +1,180 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OzMateApi.DataAccess.Repository.IRepository;
 using OzMateApi.Models;
-using OzMateApi.Entities;
 
-namespace OzMateApi.Controllers;
-
-[ApiController]
-[Route("api/[controller]/")]
-public class PostsController : ControllerBase
+namespace OzMateApi.Controllers
 {
-    private readonly PostService _postService;
 
-    public PostsController(OzMateContext context)
-    { 
-        _postService = new PostService(context);
+    public class CreatePostRequest
+    {
+        public string Content { get; set; }
+        public string DisplayName { get; set; }
+        public string Email { get; set; }
+        public string FirebasePhotoURL { get; set; }
+        public bool EmailVerified { get; set; }
     }
 
-    // GET: api/posts
-    [HttpGet]
-    public IActionResult GetAllPosts()
+    public class UpdatePostRequest
     {
-        try
-        {
-            IEnumerable<PostModel> data = _postService.GetPosts();
-            return Ok(data);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        public string FirebaseUid { get; set; }
+        public string DisplayName { get; set; }
+        public string Email { get; set; }
+        public string FirebasePhotoURL { get; set; }
+        public bool EmailVerified { get; set; }
     }
 
-    // GET: api/posts/5
-    [HttpGet("{id}")]
-    public IActionResult GetPostById(string id)
+    public class PostDTO: BaseModel
     {
-        try
+        public string? Content { get; set; }
+        public Guid UserId { get; set; }
+        public User User { get; set; }
+        public IEnumerable<Comment>? Comments { get; set; }
+        public IEnumerable<Media>? Medias { get; set; }
+    }
+
+
+    [ApiController]
+    [Route("api/posts/")]
+    public class PostsController : ControllerBase
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public PostsController(IUnitOfWork unitOfWork)
         {
-            PostModel? data = _postService.GetPostById(id);
-       
-            if(data == null)
+            _unitOfWork = unitOfWork;
+        }
+
+        // GET: api/posts
+        [HttpGet]
+        public IActionResult GetAllPosts()
+        {
+            try
             {
-                return NotFound();
+                IEnumerable<Post> data = _unitOfWork.Post.GetAll(includeProperties:"User");
+                return Ok(data);
             }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong and cannot fetch.");
+            }
+        }
 
-            return Ok(data);
-        }
-        catch(Exception ex)
+        // GET: api/posts/5
+        [HttpGet("{id}")]
+        public IActionResult GetPostById(string id)
         {
-            return BadRequest(ex.Message);
-        }
-    }
+            try
+            {
+                var postGuid = new Guid(id);
+                var post = _unitOfWork.Post.Get(e => e.Id.Equals(postGuid),includeProperties: "User");
 
-    // POST: api/posts
-    [HttpPost]
-    public IActionResult CreatePost([FromBody] PostModel post)
-    {
-        try
-        {
-            _postService.CreatePost(post);
-            return Ok(post);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                return Ok(post);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong and cannot fetch.");
+            }
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 
-    // PUT: api/posts/5
-    [HttpPut("{id}")]
-    public IActionResult UpdatePost(string id, [FromBody] PostModel post)
-    {
-        try
-        {
-            _postService.UpdatePost(id, post);
-            return Ok(post);
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+        // POST: api/posts
+        [HttpPost]
+        //public IActionResult CreatePost([FromForm] CreatePostRequest request)
+        //{
+        //    try
+        //    {
+        //        PostModel post = new PostModel();
+        //        post.Content = postDto.Message;
 
-    // DELETE: api/posts/5
-    [HttpDelete("{id}")]
-    public IActionResult DeletePost(string id)
-    {
-        try
-        {
-            _postService.DeletePost(id);
-            return Ok();
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+        //        foreach (var file in postDto.Files)
+        //        {
+        //            // Save the file, or do whatever you need to do with it
+        //            // For example, you can use System.IO to save the file to the server
+        //            // using (var stream = new FileStream(Path.Combine(uploadPath, file.FileName), FileMode.Create))
+        //            // {
+        //            //     file.CopyTo(stream);
+        //            // }
+        //        }
+        //        _postService.CreatePost(post);
+        //        return Ok(post);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong and cannot create.");
+        //    }
+        //}
 
-    // GET: api/posts/5/comments
-    [HttpGet("{id}/comments")]
-    public IActionResult GetPostComments(string id)
-    {
-        try
+        // PUT: api/posts/5
+        [HttpPut("{id}")]
+        //public IActionResult UpdatePost(string id, [FromBody] UpdatePostRequest request)
+        //{
+        //    try
+        //    {
+        //        var post = _unitOfWork.Post.Get(e => e.Equals(id));
+        //        if(post == null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        _unitOfWork.UpdatePost(id, post);
+        //        return Ok(post);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong and cannot update.");
+        //    }
+        //}
+
+        // DELETE: api/posts/5
+        [HttpDelete("{id}")]
+        public IActionResult DeletePost(string id)
         {
-            IEnumerable<CommentModel> data = _postService.GetPostComments(id);
-            return Ok(data);
+            try
+            {
+                var post = _unitOfWork.Post.Get(e => e.Equals(id));
+                if(post == null)
+                {
+                    return NotFound();
+                }
+                _unitOfWork.Post.Remove(post);
+                _unitOfWork.Save();
+;                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something went wrong and cannot delete.");
+            }
         }
-        catch (Exception ex)
+
+        // GET: api/posts/5/comments
+        [HttpGet("{id}/comments")]
+        public IActionResult GetPostComments(string id)
         {
-            return BadRequest(ex.Message);
+            try
+            {
+                var postGuid = new Guid(id);
+                var post = _unitOfWork.Post.Get(e => e.Id.Equals(postGuid));
+                if (post == null)
+                {
+                    return NotFound();
+                }
+
+                var commentRepository = _unitOfWork.Comment;
+
+                IEnumerable<Comment> comments = commentRepository.GetAll(e => e.PostId.Equals(postGuid), includeProperties:"User,Replies");
+                return Ok(comments);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Something went wrong and cannot fetch.");
+            }
         }
+
+
+
     }
 
 }
-
